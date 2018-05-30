@@ -1,20 +1,40 @@
 const electron = require('electron');
 
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, Menu, dialog} = require('electron')
 
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.
   let win
-
   function createWindow () {
     // Create the browser window.
-    win = new BrowserWindow({width: 580, height: 150})
-
+    win = new BrowserWindow({
+      width: 580,
+      height: 150,
+      transparent: true//,
+      //frame: false
+      //useContentSize: true,
+      //movable: true
+    });
+    const menu = Menu.buildFromTemplate(
+      [
+        {
+          label:'settings',
+          click () {win.loadFile('settings.html')}
+        },
+        {
+          label: 'refresh',
+          click () {win.loadFile('index.html')}
+        }
+      ]
+    )
+    //const menu = new Menu();
+    Menu.setApplicationMenu(menu);
+    //win.setIgnoreMouseEvents(true);
     // and load the index.html of the app.
     win.loadFile('index.html')
 
     // Open the DevTools.
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {

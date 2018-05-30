@@ -7,68 +7,61 @@
       <link rel="stylesheet" type="text/css" href="css/beauter.min.css"/>
     </head>
     <body>
-        <!--
-      <div class="container" style="height:200px;">
-        <div class="col m2"><img src="" id="weather_icon" /></div>
-        <div class="col m10"><p id="data"></p></div>
-      </div>
--->
         <table>
             <tbody>
                 <tr>
                     <td><img src="" id="weather_icon" /></td>
                     <td><p id="data2"></p></td>
-            
                     <td><p id="data"></p></td>
                 </tr>
-                
             </tbody>
-        </table>    
+        </table>
     </body>
   </html>
   <script>
   const request = require('request');
   let state = 'CA';
-  let city = 'valley_village';
+  let city = 'valencia';
   let api_key = 'f697f6a381fd3be2';
   let url = 'http://api.wunderground.com/api/'+api_key+'/conditions/q/' + state + '/' + city + '.json';
   console.log(url);
-  request(url, function (err, response, body) {
-    if(err){ console.log('! error:', error);
-    } else {
-    //console.log(err);
-    //console.log(body);
-    //console.log(response);
-    const weather = JSON.parse(body);
-    console.log(weather);
-    let loc = weather.current_observation.display_location.full;
-    let temp = weather.current_observation.temperature_string;
-    //let loc = weather.current_observation.display_location.full;
-    let icon_link = weather.current_observation.icon_url;
-    let forecast = weather.current_observation.weather;
-    let obs_time = weather.current_observation.observation_time;
-    console.log(temp);
-    //document.getElementById('temp').innerHTML = temp;
-    document.getElementById('weather_icon').src = icon_link;
-    document.getElementById('title').innerHTML = temp + " " + loc;
-    document.getElementById('data').innerHTML = forecast + '<br/>' + temp;
-    //document.getElementById('loc').innerHTML = loc;
-    document.getElementById('data2').innerHTML = loc + '<br/>' + obs_time;
-    //document.getElementById('temp').innerHTML = temp;
-    //document.getElementById('forecast').innerHTML = forecast;
-    }
-  });
+  getWeather();
+  function getWeather(){
+    request(url, function (err, response, body) {
+      if(err){ console.log('! error:', error);
+      } else {
+      //console.log(err);
+      //console.log(body);
+      //console.log(response);
+      const weather = JSON.parse(body);
+      console.log(weather);
+      let loc = weather.current_observation.display_location.full;
+      let temp = weather.current_observation.temperature_string;
+      //let loc = weather.current_observation.display_location.full;
+      let icon_link = weather.current_observation.icon_url;
+      let forecast = weather.current_observation.weather;
+      let obs_time = weather.current_observation.observation_time;
+      console.log(temp);
+      //document.getElementById('temp').innerHTML = temp;
+      document.getElementById('weather_icon').src = icon_link;
+      document.getElementById('title').innerHTML = loc + " " + temp;
+      document.getElementById('data').innerHTML = forecast + '<br/>' + temp;
+      //document.getElementById('loc').innerHTML = loc;
+      document.getElementById('data2').innerHTML = loc + '<br/>' + obs_time;
+      //document.getElementById('temp').innerHTML = temp;
+      //document.getElementById('forecast').innerHTML = forecast;
+      }
+    });
+  }
+  
   </script>
   <style>
-      
-      table{
-          margin: 2em;
-      }
-      table *{
-          
-          padding: .5em;
-      }
+
+  table *{
+    border-color: transparent;
+  }
   body{
+    color:white;
     background-color: transparent;
   }
   </style>
