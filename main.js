@@ -10,13 +10,20 @@ const {app, BrowserWindow, Menu, dialog} = require('electron')
     win = new BrowserWindow({
       width: 580,
       height: 150,
+      titleBarStyle: 'hidden',        
       transparent: true//,
       //frame: false
       //useContentSize: true,
       //movable: true
     });
-    const menu = Menu.buildFromTemplate(
+    const menu = new Menu();
+          
+          /*Menu.buildFromTemplate(
       [
+          {
+            label: app.getName(),
+              submenu:[]
+          },
         {
           label:'settings',
           click () {win.loadFile('settings.html')}
@@ -27,6 +34,7 @@ const {app, BrowserWindow, Menu, dialog} = require('electron')
         }
       ]
     )
+    */
     //const menu = new Menu();
     Menu.setApplicationMenu(menu);
     //win.setIgnoreMouseEvents(true);
@@ -34,7 +42,7 @@ const {app, BrowserWindow, Menu, dialog} = require('electron')
     win.loadFile('index.html')
 
     // Open the DevTools.
-    //win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {
