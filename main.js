@@ -8,16 +8,16 @@ const {app, BrowserWindow, Menu, dialog} = require('electron')
   function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
-      width: 580,
-      height: 150,
-      titleBarStyle: 'hidden',        
-      transparent: true//,
-      //frame: false
+      width: 880,
+      height: 800,
+      titleBarStyle: 'hidden',
+      transparent: true,
+      frame: false
       //useContentSize: true,
       //movable: true
     });
     const menu = new Menu();
-          
+
           /*Menu.buildFromTemplate(
       [
           {

@@ -10,7 +10,7 @@
   "author": "wynk182",
   "license": "ISC",
   "dependencies": {
-    "npm": "^6.1.0"
+    "npm": "^6.1.0"    
   },
   "devDependencies": {
     "electron": "^2.0.2"

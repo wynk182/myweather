@@ -5,30 +5,33 @@
       <title>What's the weather?</title>
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
       <link rel="stylesheet" type="text/css" href="css/beauter.min.css"/>
-    <script src="js/fontawesome-all.min.js"></script>    
+    <script src="js/fontawesome-all.min.js"></script>
     </head>
     <body>
-        <div class="_alignCenter titlebar" id="title"></div>
-        <div class="">
-            <div class="row container">
-                <div class="" id="data2"></div>
-            </div>
-            <div class="row container">
-                <div class="col m5 info"><img src="" id="weather_icon" /></div>
-                <div class="col m5 info"><div id="data"></div></div>
-                <div class="col m2"><a href="#" class="_floatRight"><i class="fas fa-cog"></i></a>
-            </div>
+
+      <ul class="topnav titlebar" id="myTopnav2">
+        <li><a href="#" id="title">Brand</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a href="#">Help</a></li>
+        <li style="float:right;"><a href="#" id="close-btn"><i class="fas fa-window-close"></i></a></li>
+        <li style="float:right;"><a href="#" id="min-btn"><i class="fas fa-window-minimize"></i></a></li>
+      </ul>
+      <div id="test"></div>
+      <div class="">
+          <div class="row container">
+              <div class="" id="data2"></div>
+          </div>
+          <div class="row container">
+              <div class="col m6 info"><img src="" id="weather_icon" /></div>
+              <div class="col m6 info"><div id="data"></div></div>
+          </div>
                 <!--<p id="data2"></p>-->
-            </div>
-            
-             
-        </div>
-               
+          </div>
+      </div>
+
     </body>
   </html>
   <script>
-      
-  require('./renderer.js');
   var config = [
       {
           order:1,
@@ -48,67 +51,171 @@
           city:'Honolulu',
           nickname:'Dream'
       }
+
   ];
-  config.forEach(function(o){
-      getWeather(o);
-  });
+  const React = require('react');
+  const ReactDOM = require('react-dom');
+  require('./renderer.js');
   const request = require('request');
-  var state = 'CA';
-  var city = 'valley_village';
-  let api_key = 'f697f6a381fd3be2';
-  
-  console.log(url);
-  getWeather();
+  const remote = require('electron').remote;
+  var api_key = 'f697f6a381fd3be2';
+
+  class Weather extends React.Component {
+    constructor(props){
+      super(props);
+      this.state = {
+        title: props.object.nickname,
+        icon_url: '',
+        temp: '',
+        location: ''
+      };
+    }
+    componentDidMount() {
+      var that = this;
+      let url = 'http://api.wunderground.com/api/'+api_key+'/conditions/q/' + this.props.object.state + '/' + this.props.object.city + '.json';
+      console.log(url);
+      request(url, (err, response, body) => {
+        if(err){
+          that.setState({
+            title: err
+          });
+        }
+        else {
+          //console.log(err);
+          //console.log(body);
+          //console.log(response);
+
+          try{
+            const weather = JSON.parse(body);
+            console.log(weather);
+            that.setState({
+              temp: weather.current_observation.temperature_string,
+              location: weather.current_observation.display_location.full,
+              icon_url: weather.current_observation.icon_url.replace("/k/", "/i/")
+            });
+          }
+          catch(error){
+            that.setState({
+              title: error
+            });
+          }
+        }
+      });
+    }
+    render() {
+      return React.createElement('div', {class: 'container'},
+        React.createElement('h3', null, this.state.title),
+        React.createElement('img', {'src': this.state.icon_url, style: {'float':'right'}}),
+        React.createElement('ul', null,
+          React.createElement('li', null, this.state.temp),
+          React.createElement('li', null, this.state.location),
+        )
+        //,
+        //React.createElement('h4', null, this.state.nickname)
+      );
+    }
+  }
+
+  class Box extends React.Component {
+    constructor(props){
+      super(props);
+    }
+    renderWeather(obj) {
+      return(
+         React.createElement(Weather,{object: obj})
+       )
+    }
+    render(){
+      var that = this;
+      var weathers = [];
+      this.props.config.forEach(function(o){
+        console.log(o);
+        weathers.push(that.renderWeather(o));
+      })
+      return (
+        weathers
+      )
+    }
+  }
+
+  ReactDOM.render(
+    React.createElement(Box, {'config': config}, null),
+    document.getElementById('test')
+  );
+/*
+  config.forEach(function(obj){
+    console.log(obj);
+    getWeather(obj);
+  });
+*/
+  //getWeather();
   function getWeather(obj){
-    var url = 'http://api.wunderground.com/api/'+api_key+'/conditions/q/' + obj.state + '/' + obj.city + '.json';
+    let url = 'http://api.wunderground.com/api/'+api_key+'/conditions/q/' + obj.state + '/' + obj.city + '.json';
+    console.log(url);
     request(url, function (err, response, body) {
-      if(err){ console.log('! error:', error);
+      if(err){
+        return {'error': err};
       } else {
       //console.log(err);
       //console.log(body);
       //console.log(response);
-      const weather = JSON.parse(body);
-      console.log(weather);
-      let loc = weather.current_observation.display_location.full;
-      let temp = weather.current_observation.temperature_string;
-      //let loc = weather.current_observation.display_location.full;
-      let icon_link = weather.current_observation.icon_url.replace("/k/", "/i/");
-      let forecast = weather.current_observation.weather;
-      let obs_time = weather.current_observation.observation_time;
-      console.log(temp);
-      //document.getElementById('temp').innerHTML = temp;
-      document.getElementById('weather_icon').src = icon_link;
-      document.getElementById('title').innerHTML = loc + " " + temp;
-      document.getElementById('data').innerHTML = forecast + '<br/>' + temp;
-      //document.getElementById('loc').innerHTML = loc;
-      document.getElementById('data2').innerHTML = loc + ' ' + obs_time;
-      //document.getElementById('temp').innerHTML = temp;
-      //document.getElementById('forecast').innerHTML = forecast;
+      console.log(body);
+      try{
+        const weather = JSON.parse(body);
+        let loc = weather.current_observation.display_location.full;
+        let temp = weather.current_observation.temperature_string;
+        //let loc = weather.current_observation.display_location.full;
+        let icon_link = weather.current_observation.icon_url.replace("/k/", "/i/");
+        let forecast = weather.current_observation.weather;
+        let obs_time = weather.current_observation.observation_time;
+        return {'icon_url': icon_link, 'location': loc, 'temp':temp, 'forecast':forcast, 'time': obs_time};
+      }
+      catch(error){
+
+        return {'error': error};
+      }
+
+
       }
     });
   }
-  
+  document.getElementById("min-btn").addEventListener("click", function (e) {
+       var window = remote.getCurrentWindow();
+       window.minimize();
+  });
+
+  document.getElementById("close-btn").addEventListener("click", function (e) {
+       var window = remote.getCurrentWindow();
+       window.close();
+  });
   </script>
   <style>
-      
       a{
           color:black;
       }
       .titlebar {
-        color:white;  
-        background-color:darkslategray;
+        height: 25px;
         -webkit-user-select: none;
         -webkit-app-region: drag;
       }
-      body:hover{
-          background-color: whitesmoke;
-          color:black;
+      ul.titlebar li a{
+        margin-left: .5em;
+        margin-right: .5em;
+        font-size: 12px;
+        padding-top:0px;
+        padding-bottom:0px;
+        padding-left: 5px;
+        padding-right: 5px;
+        -webkit-app-region: no-drag;
+      }
+      ul.titlebar li a:hover{
+        background-color: darkgrey;
       }
   table *{
     border-color: transparent;
   }
   body{
-    /*color:white;*/
+    color:white;
     background-color: transparent;
   }
   </style>
