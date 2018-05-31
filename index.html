@@ -10,7 +10,7 @@
     <body>
 
       <ul class="topnav titlebar" id="myTopnav2">
-        <li><a href="#" id="title">Brand</a></li>
+        <li><a href="#" id="title">Weather</a></li>
         <li><a href="#">Settings</a></li>
         <li><a href="#">Help</a></li>
         <li style="float:right;"><a href="#" id="close-btn"><i class="fas fa-window-close"></i></a></li>
@@ -104,7 +104,7 @@
     }
     render() {
       return React.createElement('div', {class: 'container'},
-        React.createElement('h3', null, this.state.title),
+        React.createElement('h5', null, this.state.title),
         React.createElement('img', {'src': this.state.icon_url, style: {'float':'right'}}),
         React.createElement('ul', null,
           React.createElement('li', null, this.state.temp),
@@ -210,6 +210,18 @@
       }
       ul.titlebar li a:hover{
         background-color: darkgrey;
+      }
+      @media screen and (max-width:750px)
+      {
+          ul.topnav li:not(:first-child)
+          {
+              display: block;
+          }
+          ul.topnav li.-icon
+          {
+              display: initial;
+              float: right;
+          }
       }
   table *{
     border-color: transparent;

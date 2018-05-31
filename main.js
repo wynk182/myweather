@@ -8,8 +8,8 @@ const {app, BrowserWindow, Menu, dialog} = require('electron')
   function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
-      width: 880,
-      height: 800,
+      width: 300,
+      height: 500,
       titleBarStyle: 'hidden',
       transparent: true,
       frame: false
@@ -42,7 +42,7 @@ const {app, BrowserWindow, Menu, dialog} = require('electron')
     win.loadFile('index.html')
 
     // Open the DevTools.
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {
