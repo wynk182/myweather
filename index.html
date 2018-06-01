@@ -16,18 +16,7 @@
         <li style="float:right;"><a href="#" id="close-btn"><i class="fas fa-window-close"></i></a></li>
         <li style="float:right;"><a href="#" id="min-btn"><i class="fas fa-window-minimize"></i></a></li>
       </ul>
-      <div id="test"></div>
-      <div class="">
-          <div class="row container">
-              <div class="" id="data2"></div>
-          </div>
-          <div class="row container">
-              <div class="col m6 info"><img src="" id="weather_icon" /></div>
-              <div class="col m6 info"><div id="data"></div></div>
-          </div>
-                <!--<p id="data2"></p>-->
-          </div>
-      </div>
+      <div id="app"></div>
 
     </body>
   </html>
@@ -81,10 +70,6 @@
           });
         }
         else {
-          //console.log(err);
-          //console.log(body);
-          //console.log(response);
-
           try{
             const weather = JSON.parse(body);
             console.log(weather);
@@ -103,16 +88,16 @@
       });
     }
     render() {
-      return React.createElement('div', {class: 'container'},
-        React.createElement('h5', null, this.state.title),
-        React.createElement('img', {'src': this.state.icon_url, style: {'float':'right'}}),
-        React.createElement('ul', null,
-          React.createElement('li', null, this.state.temp),
-          React.createElement('li', null, this.state.location),
+      return(
+        React.createElement('div', {class: 'container'},
+          React.createElement('h5', null, this.state.title),
+          React.createElement('img', {'src': this.state.icon_url, style: {'float':'right'}}),
+          React.createElement('ul', null,
+            React.createElement('li', null, this.state.temp),
+            React.createElement('li', null, this.state.location),
+          )
         )
-        //,
-        //React.createElement('h4', null, this.state.nickname)
-      );
+      )
     }
   }
 
@@ -140,7 +125,7 @@
 
   ReactDOM.render(
     React.createElement(Box, {'config': config}, null),
-    document.getElementById('test')
+    document.getElementById('app')
   );
 /*
   config.forEach(function(obj){
@@ -148,37 +133,6 @@
     getWeather(obj);
   });
 */
-  //getWeather();
-  function getWeather(obj){
-    let url = 'http://api.wunderground.com/api/'+api_key+'/conditions/q/' + obj.state + '/' + obj.city + '.json';
-    console.log(url);
-    request(url, function (err, response, body) {
-      if(err){
-        return {'error': err};
-      } else {
-      //console.log(err);
-      //console.log(body);
-      //console.log(response);
-      console.log(body);
-      try{
-        const weather = JSON.parse(body);
-        let loc = weather.current_observation.display_location.full;
-        let temp = weather.current_observation.temperature_string;
-        //let loc = weather.current_observation.display_location.full;
-        let icon_link = weather.current_observation.icon_url.replace("/k/", "/i/");
-        let forecast = weather.current_observation.weather;
-        let obs_time = weather.current_observation.observation_time;
-        return {'icon_url': icon_link, 'location': loc, 'temp':temp, 'forecast':forcast, 'time': obs_time};
-      }
-      catch(error){
-
-        return {'error': error};
-      }
-
-
-      }
-    });
-  }
   document.getElementById("min-btn").addEventListener("click", function (e) {
        var window = remote.getCurrentWindow();
        window.minimize();
