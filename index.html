@@ -7,7 +7,7 @@
       <link rel="stylesheet" type="text/css" href="css/beauter.min.css"/>
     <script src="js/fontawesome-all.min.js"></script>
     </head>
-    <body>
+    <body class="_dark">
 
       <ul class="topnav titlebar" id="myTopnav2">
         <li><a href="#" id="title">Weather</a></li>
@@ -16,7 +16,9 @@
         <li style="float:right;"><a href="#" id="close-btn"><i class="fas fa-window-close"></i></a></li>
         <li style="float:right;"><a href="#" id="min-btn"><i class="fas fa-window-minimize"></i></a></li>
       </ul>
+        <div class="titlebar container" id="empty_tb" style="width: 100%;"><br/></div>  
       <div id="app"></div>
+        
 
     </body>
   </html>
@@ -56,7 +58,8 @@
         title: props.object.nickname,
         icon_url: '',
         temp: '',
-        location: ''
+        location: '',
+        full_obj: {}
       };
     }
     componentDidMount() {
@@ -74,6 +77,7 @@
             const weather = JSON.parse(body);
             console.log(weather);
             that.setState({
+              full_obj: weather.current_observation,
               temp: weather.current_observation.temperature_string,
               location: weather.current_observation.display_location.full,
               icon_url: weather.current_observation.icon_url.replace("/k/", "/i/")
@@ -89,14 +93,26 @@
     }
     render() {
       return(
-        React.createElement('div', {class: 'container'},
-          React.createElement('h5', null, this.state.title),
-          React.createElement('img', {'src': this.state.icon_url, style: {'float':'right'}}),
-          React.createElement('ul', null,
-            React.createElement('li', null, this.state.temp),
-            React.createElement('li', null, this.state.location),
+            React.createElement('div', {class: 'container'},
+            React.createElement('div', {class: 'accordion'},
+              React.createElement('h5', null, this.state.title),
+              React.createElement('img', {'src': this.state.icon_url, style: {'float':'right'}}),
+              React.createElement('ul', null,
+                React.createElement('li', null, this.state.temp),
+                React.createElement('li', null, this.state.location)
+              )
+            ),
+            React.createElement('div', {class:'-panel _dark'},
+              React.createElement('ul',null,
+                React.createElement('li', null, this.state.full_obj.relative_humidity),
+                React.createElement('li', null, this.state.full_obj.wind_string),
+                React.createElement('li', null, this.state.full_obj.precip_today_string),
+                React.createElement('li', null, this.state.full_obj.pressure_in),
+                React.createElement('li', null, this.state.full_obj.visibility_mi),
+                React.createElement('li', null, this.state.full_obj.observation_time),
+              )
+            ) 
           )
-        )
       )
     }
   }
@@ -142,12 +158,15 @@
        var window = remote.getCurrentWindow();
        window.close();
   });
+  if(process.platform === 'darwin')
+      document.getElementById('myTopnav2').style.display = 'none';
+  else
+      document.getElementById('empty_tb').style.display = 'none';
   </script>
   <style>
-      a{
-          color:black;
-      }
+      
       .titlebar {
+        background-color: black;
         height: 25px;
         -webkit-user-select: none;
         -webkit-app-region: drag;
@@ -177,12 +196,7 @@
               float: right;
           }
       }
-  table *{
-    border-color: transparent;
-  }
-  body{
-    color:white;
-    background-color: transparent;
-  }
+  
+  
   </style>
 <script src="js/beauter.min.js"></script>

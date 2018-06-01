@@ -1,4 +1,5 @@
 const electron = require('electron');
+const OS = process.platform;
 if (process.platform === 'win32') {
         //document.getElementsByClassName('inside')[0].setAttribute("class", "inside win32color");
         console.log('process is running on win32');
